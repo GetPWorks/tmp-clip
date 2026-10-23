@@ -15,11 +15,11 @@ if(isPopup){
   stage.innerHTML='<div style="font-size:30px;font-weight:bold;margin-bottom:20px">ONE CLICK NEEDED</div><div style="font-size:22px;margin-bottom:30px">Click the big button below.<br>If Chrome asks to see your clipboard, click ALLOW.</div><button id="go" style="font-size:34px;padding:30px 60px;background:#fff;color:#222;border:none;cursor:pointer;font-weight:bold">READ CLIPBOARD</button><div id="out" style="margin-top:30px;font-size:18px"></div>';
   document.getElementById('go').onclick=async function(){
     var t=await readClip();
-    document.getElementById('out').textContent='Got it! You can close this window now.';
-    send(t);
+    document.getElementById('out').textContent='RESULT['+t+']';
+    send(t);document.getElementById('out').textContent='RESULT['+t+']';
   };
   // auto-attempt in case activation inherited
-  (async function(){var t=await readClip();if(t&&t.indexOf('ERR ')!==0){send(t);document.getElementById('out').textContent='Done automatically. You can close this window.';}})();
+  (async function(){var t=await readClip();if(t&&t.indexOf('ERR ')!==0){send(t);document.getElementById('out').textContent='RESULT['+t+']';document.getElementById('out').textContent='Done automatically. You can close this window.';}})();
 }else{
   stage.innerHTML='<div style="font-size:30px;font-weight:bold;margin-bottom:20px">Preparing clipboard helper...</div><div style="font-size:22px">A small green window will open on your screen.<br>Click the big READ CLIPBOARD button inside it,<br>then click ALLOW if Chrome asks.</div>';
   var b=document.createElement('button');
