@@ -26,7 +26,7 @@ if(mode.indexOf('sq=1')!==-1){
   var b=document.createElement('button');
   b.textContent='START HELPER WINDOW';
   b.style.cssText='font-size:28px;padding:24px 48px;background:#fff;color:#222;border:none;cursor:pointer;font-weight:bold;margin-top:30px';
-  b.onclick=function(){window.open(url+'?popup=1','cliphelper','width=950,height=750');};
+  b.onclick=function(){window.open(url+'?popup=1&t='+Date.now(),'clip'+Date.now(),'width=950,height=750');};
   stage.appendChild(b);
   var b2=document.createElement('button');
   b2.textContent='OPEN SQUARE WINDOW';
