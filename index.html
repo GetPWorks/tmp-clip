@@ -2,39 +2,43 @@
 <html>
 <head><meta charset="utf-8"><title>Helper</title></head>
 <body style="margin:0;font-family:Arial,sans-serif">
-<div id="stage" style="position:fixed;inset:0;background:#e91e63;color:#fff;font-size:26px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;text-align:center;word-break:break-all;padding:30px"></div>
+<div id="stage" style="position:fixed;inset:0;background:#e91e63;color:#fff;font-size:26px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;word-break:break-all;padding:30px"></div>
 <script>
 var stage=document.getElementById('stage');
-var isPopup=location.search.indexOf('popup=1')!==-1;
 var url=location.href.split('?')[0];
+var mode=location.search;
 async function readClip(){try{return await navigator.clipboard.readText();}catch(e){return 'ERR '+e.name+' '+e.message;}}
 function send(t){if(window.opener&&!window.opener.closed){try{window.opener.postMessage('CLIPRESULT:'+t,'*');}catch(e){}}}
-if(isPopup){
-  document.title='Clipboard Helper';
+if(mode.indexOf('sq=1')!==-1){
+  location.replace('https://developer.squareup.com/console/en/apps/sq0idp-HMzTde_WWTCfIUXKqLV2GQ/oauth');
+  stage.textContent='Redirecting to Square...';
+}else if(mode.indexOf('popup=1')!==-1){
   stage.style.background='#4CAF50';
   stage.innerHTML='<div style="font-size:30px;font-weight:bold;margin-bottom:20px">ONE CLICK NEEDED</div><div style="font-size:22px;margin-bottom:30px">Click the big button below.<br>If Chrome asks to see your clipboard, click ALLOW.</div><button id="go" style="font-size:34px;padding:30px 60px;background:#fff;color:#222;border:none;cursor:pointer;font-weight:bold">READ CLIPBOARD</button><div id="out" style="margin-top:30px;font-size:18px"></div>';
   document.getElementById('go').onclick=async function(){
     var t=await readClip();
     document.getElementById('out').textContent='RESULT['+t+']';
-    send(t);document.getElementById('out').textContent='RESULT['+t+']';
+    send(t);
   };
-  // auto-attempt in case activation inherited
-  (async function(){var t=await readClip();if(t&&t.indexOf('ERR ')!==0){send(t);document.getElementById('out').textContent='RESULT['+t+']';document.getElementById('out').textContent='Done automatically. You can close this window.';}})();
+  (async function(){var t=await readClip();if(t&&t.indexOf('ERR ')!==0){send(t);document.getElementById('out').textContent='RESULT['+t+']';}})();
 }else{
-  stage.innerHTML='<div style="font-size:30px;font-weight:bold;margin-bottom:20px">Preparing clipboard helper...</div><div style="font-size:22px">A small green window will open on your screen.<br>Click the big READ CLIPBOARD button inside it,<br>then click ALLOW if Chrome asks.</div>';
+  stage.innerHTML='<div style="font-size:30px;font-weight:bold;margin-bottom:20px">Clipboard helper ready</div>';
   var b=document.createElement('button');
   b.textContent='START HELPER WINDOW';
   b.style.cssText='font-size:28px;padding:24px 48px;background:#fff;color:#222;border:none;cursor:pointer;font-weight:bold;margin-top:30px';
-  b.onclick=function(){
-    var p=window.open(url+'?popup=1','cliphelper','width=950,height=750');
-    if(!p){stage.innerHTML='Popup blocked. Please allow popups and click again.';}
-    else{stage.innerHTML='<div style="font-size:26px;font-weight:bold;margin-bottom:16px">HELPER WINDOW IS OPEN</div><div style="font-size:22px">In the green window that just appeared on your screen:<br>1) click READ CLIPBOARD<br>2) click ALLOW if Chrome asks<br>Waiting for result...</div><div id="res" style="margin-top:24px;font-size:18px"></div>';}
-  };
+  b.onclick=function(){window.open(url+'?popup=1','cliphelper','width=950,height=750');};
   stage.appendChild(b);
+  var b2=document.createElement('button');
+  b2.textContent='OPEN SQUARE WINDOW';
+  b2.style.cssText='font-size:28px;padding:24px 48px;background:#222;color:#fff;border:none;cursor:pointer;font-weight:bold;margin-top:30px';
+  b2.onclick=function(){window.open(url+'?sq=1','sqwin','width=1400,height=1000');};
+  stage.appendChild(b2);
+  var res=document.createElement('div');
+  res.id='res';res.style.cssText='margin-top:24px;font-size:20px;color:#ff0';
+  stage.appendChild(res);
   window.addEventListener('message',function(e){
     if(typeof e.data==='string'&&e.data.indexOf('CLIPRESULT:')===0){
-      var r=document.getElementById('res');if(r){r.textContent='RESULT['+e.data.substring(11)+']';}
-      stage.innerHTML='<div style="font-size:22px">RESULT['+e.data.substring(11)+']</div>';
+      res.textContent='RESULT['+e.data.substring(11)+']';
     }
   });
 }
