@@ -2,10 +2,10 @@
 <html>
 <head><meta charset="utf-8"><title>Temp helper</title></head>
 <body style="margin:0">
-<div id="full" style="position:fixed;inset:0;background:#e91e63;color:#fff;font-size:32px;display:flex;align-items:center;justify-content:center;cursor:pointer;text-align:center;padding:20px;word-break:break-all">TAP ANYWHERE TO READ CLIPBOARD</div>
+<button id="full" style="position:fixed;inset:0;width:100vw;height:100vh;border:none;background:#e91e63;color:#fff;font-size:32px;display:block;cursor:pointer;text-align:center;word-break:break-all;padding:40px">TAP ANYWHERE TO READ CLIPBOARD</button>
 <script>
 var f=document.getElementById('full');
-f.onclick=async function(){
+f.addEventListener('click',async function(){
   f.textContent='CLICK REGISTERED, calling readText...';
   try{
     var t=await navigator.clipboard.readText();
@@ -13,7 +13,7 @@ f.onclick=async function(){
   }catch(e){
     f.textContent='ERR '+e.name+' '+e.message;
   }
-};
+});
 </script>
 </body>
 </html>
